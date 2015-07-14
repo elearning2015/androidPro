@@ -209,7 +209,7 @@ public class Missile
 	public boolean hitWall(Wall w)
 	{
 		//如果加上条件!this.good，则敌方子弹不能穿墙，但我方可以
-		if(this.live && this.getRect().intersects(w.getRect()))
+		if(!this.good && this.live && this.getRect().intersects(w.getRect()))
 		{
 			this.live = false;
 			return true;
