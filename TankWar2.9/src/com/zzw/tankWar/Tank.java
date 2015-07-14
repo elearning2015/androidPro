@@ -22,6 +22,7 @@ public class Tank
 	public static final int TANK_STEP = 5;
 	public static final int XSPEED = 7;
 	public static final int YSPEED = 7;
+	public static final int DELTA_SPEED = 3; //我方坦克速度要快3
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	public static final int LIFE_INIT = 100;
@@ -117,7 +118,7 @@ public class Tank
 		switch(ptDir)
 		{
 		case L:
-			if(this.good)
+			if(this.good)  //我方坦克设置颜色底色
 			{
 				Color c = g.getColor();
 				g.setColor(MYTANK_COLOR);
@@ -217,31 +218,67 @@ public class Tank
 		{
 		case L:
 			x -= YSPEED;
+			if(this.good)
+			{
+				x -= DELTA_SPEED;
+			}
 			break;
 		case LU:
-			x -= 	XSPEED;
+			x -= XSPEED;
 			y -= YSPEED;
+			if(this.good)
+			{
+				x -= DELTA_SPEED;
+				y -= DELTA_SPEED;
+			}
 			break;
 		case LD:
-			x -= 	XSPEED;
+			x -= XSPEED;
 			y += YSPEED;
+			if(this.good)
+			{
+				x -= DELTA_SPEED;
+				y += DELTA_SPEED;
+			}
 			break;
 		case R:
-			x += 	XSPEED;
+			x += XSPEED;
+			if(this.good)
+			{
+				x += DELTA_SPEED;
+			}
 			break;
 		case RU:
-			x += 	XSPEED;
+			x += XSPEED;
 			y -= YSPEED;
+			if(this.good)
+			{
+				x += 3;
+				y -= 3;
+			}
 			break;
 		case RD:
-			x += 	XSPEED;
+			x += XSPEED;
 			y += YSPEED;
+			if(this.good)
+			{
+				x += DELTA_SPEED;
+				y += DELTA_SPEED;
+			}
 			break;
 		case U:
 			y -= YSPEED;
+			if(this.good)
+			{
+				y -= DELTA_SPEED;
+			}
 			break;
 		case D:
 			y += YSPEED;
+			if(this.good)
+			{
+				y += DELTA_SPEED;
+			}
 			break;
 		case STOP:
 			x += 0;

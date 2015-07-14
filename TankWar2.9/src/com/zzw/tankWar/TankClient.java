@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * 坦克大战游戏的主控类
@@ -32,11 +33,11 @@ public class TankClient extends Frame {
 	/**
 	 * 整个游戏的宽度
 	 */
-	public static final int GAME_WIDTH = 800;
+	public static final int GAME_WIDTH = 1100;
 	/**
 	 * 整个游戏的高度
 	 */
-	public static final int GAME_HEIGHT = 600;
+	public static final int GAME_HEIGHT = 680;
 
 	private Image offScreen = null; // 虚拟屏幕，先在这个上面画好，然后一起画到真实屏幕上，可防止闪烁现象
 	private boolean init = true; // 判断是否初次打开画面
@@ -44,12 +45,24 @@ public class TankClient extends Frame {
 	private Panel pl = null;
 	private Font font = null;  //label中字体
 	private Color color = null; //label中字体颜色
-	private Image initImg = Toolkit.getDefaultToolkit().getImage(TankClient.class.getClassLoader().getResource("images/tankWar.jpg"));
-	private Image bkImg = Toolkit.getDefaultToolkit().getImage(TankClient.class.getClassLoader().getResource("images/tankWar1.jpg"));
+	static Image initImg, bkImg, wall1, wall2;
+	static Toolkit tk;
+	private Random rn = new Random();
 	
-	Tank myTank = new Tank(140, 250, true, Direction.STOP, this);
-	Wall w1 = new Wall(140, 180, 60, 235, this);
-	Wall w2 = new Wall(360, 130, 235, 60, this);
+	static 
+	{
+		tk = Toolkit.getDefaultToolkit();
+		initImg = tk.getImage(TankClient.class.getClassLoader().getResource("images/tankWar.jpg"));
+		bkImg = Toolkit.getDefaultToolkit().getImage(TankClient.class.getClassLoader().getResource("images/tankWar1.jpg"));
+		wall1 = tk.getImage(TankClient.class.getClassLoader().getResource("images/wall1.png"));
+		wall2 = tk.getImage(TankClient.class.getClassLoader().getResource("images/wall2.png"));
+	}
+	
+	
+	
+	Tank myTank = new Tank(this.getX() + GAME_WIDTH/5, this.getY() + GAME_HEIGHT/2, true, Direction.STOP, this);
+	Wall w1 = new Wall(this.getX() + GAME_WIDTH/2, this.getY() + GAME_HEIGHT/4, wall1, 432, 68,this);
+	Wall w2 = new Wall(this.getX() + GAME_WIDTH/5, this.getY() + GAME_HEIGHT/3, wall2, 68, 432, this);
 	Blood blood = new Blood(15, 15);
 	List<Missile> missiles = new ArrayList<Missile>();
 	List<Explode> explodes = new ArrayList<Explode>();
@@ -80,6 +93,28 @@ public class TankClient extends Frame {
 			g.drawImage(initImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 			return;
 		}
+		
+		if(!init && clicked)  //在开始界面选择了，就根据游戏等级获取不同的参数配置
+		{
+			init = true;
+			int num = Integer.parseInt(PropertyMgr.getProperty("initTankCount"));
+			int x, y;
+			for (int i = 0; i < num; i++) 
+			{
+				Tank t;
+				do
+				{
+					x = this.getX() + rn.nextInt(GAME_WIDTH);
+					y = this.getY() + rn.nextInt(GAME_HEIGHT);
+					t = new Tank(x, y, false, Direction.D, this);
+				}while(t.collideswithTanks(tanks) || t.hitWall(w1) || t.hitWall(w2));
+				//do while:检测当前坦克坐标是否与其它坦克产生的互相重合、是否与墙重合，
+				//如果是，则重新产生坐标，否则坦克与坦克、坦克与墙黏在一起
+				
+				tanks.add(t);
+				
+			}
+		}
 
 		g.drawImage(bkImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 		g.drawString("missiles count: " + missiles.size(), 10, 50);
@@ -91,11 +126,22 @@ public class TankClient extends Frame {
 		/**
 		 * 敌军全被消灭了，又新加一批
 		 */
-		if (tanks.size() <= 0) {
-			for (int i = 0; i < Integer.parseInt(PropertyMgr
-					.getProperty("rebornTankCount")); i++) {
-				Tank t = new Tank(50 + 40 * (i + 1), 50, false, Direction.D,
-						this);
+		if (tanks.size() <= 0) 
+		{
+			int num = Integer.parseInt(PropertyMgr.getProperty("rebornTankCount"));
+			int x, y;
+			for (int i = 0; i < num; i++) 
+			{
+				Tank t;
+				do
+				{
+					x = this.getX() + rn.nextInt(GAME_WIDTH);
+					y = this.getY() + rn.nextInt(GAME_HEIGHT);
+					t = new Tank(x, y, false, Direction.D, this);
+				}while(t.collideswithTanks(tanks) || t.hitWall(w1) || t.hitWall(w2));
+				//do while:检测当前坦克坐标是否与其它坦克产生的互相重合、是否与墙重合，
+				//如果是，则重新产生坐标，否则坦克与坦克、坦克与墙黏在一起
+				
 				tanks.add(t);
 			}
 		}
@@ -135,12 +181,8 @@ public class TankClient extends Frame {
 	/**
 	 * 游戏主窗口登入
 	 */
-	public void launchFrame() {
-		for (int i = 0; i < Integer.parseInt(PropertyMgr
-				.getProperty("initTankCount")); i++) {
-			Tank t = new Tank(50 + 40 * (i + 1), 50, false, Direction.D, this);
-			tanks.add(t);
-		}
+	public void launchFrame() 
+	{
 		this.setLocation(30, 40);
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
 		this.setResizable(false);
@@ -152,6 +194,7 @@ public class TankClient extends Frame {
 		});
 		this.addKeyListener(new KeyMonitor());
 		
+		//
 		pl = new Panel();
 		pl.setLayout(new GridLayout(3,1));
 		choices.put("START", new Label("START", Label.CENTER));
@@ -170,6 +213,16 @@ public class TankClient extends Frame {
 		choices.get("LEVEL1").addMouseListener(new MouseMonitor());
 		choices.get("LEVEL2").addMouseListener(new MouseMonitor());
 
+//		if(!init && clicked)
+//		{
+//			for (int i = 0; i < Integer.parseInt(PropertyMgr.getProperty("initTankCount")); i++) 
+//			{
+//				System.out.println(PropertyMgr.getProperty("initTankCount"));
+//				Tank t = new Tank(this.getX() + rn.nextInt(GAME_WIDTH), this.getY() + rn.nextInt(GAME_HEIGHT), false, Direction.D, this);
+//				tanks.add(t);
+//			}
+//		}
+		
 		this.setVisible(true);
 		new Thread(new TankClientThread()).start();
 	}
@@ -217,10 +270,10 @@ public class TankClient extends Frame {
 		@Override
 		public void mouseClicked(MouseEvent e) 
 		{
-			pl.setVisible(false);
-			Component cmp = e.getComponent();
 			clicked = true;
 			init = false;
+			pl.setVisible(false);
+			Component cmp = e.getComponent();
 			if(cmp == choices.get("START"))
 			{
 				choices.get("LEVEL1").setVisible(false);
@@ -228,19 +281,18 @@ public class TankClient extends Frame {
 			}
 			else if(cmp == choices.get("LEVEL1"))			
 			{
-				PropertyMgr.setProperty("initTankCount", "8");
+				PropertyMgr.setProperty("initTankCount", "10");
 				PropertyMgr.setProperty("rebornTankCount", "5");
 				choices.get("START").setVisible(false);
 				choices.get("LEVEL2").setVisible(false);
 			}
 			else if(cmp == choices.get("LEVEL2"))			
 			{
-				PropertyMgr.setProperty("initTankCount", "12");
-				PropertyMgr.setProperty("rebornTankCount", "10");
+				PropertyMgr.setProperty("initTankCount", "30");
+				PropertyMgr.setProperty("rebornTankCount", "15");
 				choices.get("START").setVisible(false);
 				choices.get("LEVEL1").setVisible(false);
 			}
-			
 			cmp.setVisible(false);
 		}
 
