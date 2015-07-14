@@ -60,9 +60,9 @@ public class Explode
 	{
 		if(false == init)
 		{
-			for (int j = 0; j < imgs.length; j++) 
+			for (int j = 0; j < Explode.imgs.length; j++) 
 			{
-				g.drawImage(imgs[j], x, y, null);
+				g.drawImage(Explode.imgs[j], x, y, null);
 			}
 			init = true;
 		}
@@ -72,7 +72,7 @@ public class Explode
 			tc.explodes.remove(this);
 			return;
 		}
-		if(step == this.imgs.length)
+		if(step == Explode.imgs.length)
 		{
 			live = false;
 			return;
