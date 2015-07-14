@@ -7,10 +7,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 坦克大战游戏的主控类
@@ -32,9 +30,9 @@ public class TankClient extends Frame
 	private Image offScreen = null;
 	
 	
-    Tank myTank = new Tank(160, 250, true, Direction.STOP, this);
-    Wall w1 = new Wall(150, 200, 50, 250, this);
-    Wall w2 = new Wall(380, 100, 230, 50, this);
+    Tank myTank = new Tank(140, 250, true, Direction.STOP, this);
+    Wall w1 = new Wall(140, 180, 50, 250, this);
+    Wall w2 = new Wall(360, 130, 220, 50, this);
     Blood blood = new Blood(15, 15);
     List<Missile> missiles = new ArrayList<Missile>();
     List<Explode> explodes = new ArrayList<Explode>();

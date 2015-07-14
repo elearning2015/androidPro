@@ -23,7 +23,7 @@ public class Wall
 	public void draw(Graphics g)
 	{
 		Color c = g.getColor();
-		g.setColor(Color.black);
+		g.setColor(Color.darkGray);
 		g.fillRect(x, y, w, h);
 		g.setColor(c);
 	}

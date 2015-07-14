@@ -161,7 +161,8 @@ public class Missile
 
 	public Rectangle getRect()
 	{
-		return new Rectangle(x, y, WIDTH, HEIGHT);
+		return new Rectangle(x, y, imgs.get("L").getWidth(null), imgs.get("L").getHeight(null));
+		
 	}
 	
 	public boolean hitTank(Tank t)

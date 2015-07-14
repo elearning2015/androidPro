@@ -25,6 +25,7 @@ public class Tank
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	public static final int LIFE_INIT = 100;
+	private static final Color MYTANK_COLOR = new Color(128, 150, 230);  //设置我方坦克的底色
 	
 	private boolean bL = false, bR = false, bU = false, bD = false;
 	
@@ -116,29 +117,85 @@ public class Tank
 		switch(ptDir)
 		{
 		case L:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("L").getWidth(null), imgs.get("L").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("L"), x, y, null);
 			break;
 		case LU:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("LU").getWidth(null), imgs.get("LU").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("LU"), x, y, null);
 			break;
 		case LD:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("LD").getWidth(null), imgs.get("LD").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("LD"), x, y, null);
 			break;
 		case R:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("R").getWidth(null), imgs.get("R").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("R"), x, y, null);
 			break;
 		case RU:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("RU").getWidth(null), imgs.get("RU").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("RU"), x, y, null);
 			break;
 		case RD:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("RD").getWidth(null), imgs.get("RD").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("RD"), x, y, null);
 			break;
 		case U:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("U").getWidth(null), imgs.get("U").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("U"), x, y, null);
 			break;
 		case D:
+			if(this.good)
+			{
+				Color c = g.getColor();
+				g.setColor(MYTANK_COLOR);
+				g.fillRect(x, y, imgs.get("D").getWidth(null), imgs.get("D").getHeight(null));
+				g.setColor(c);
+			}
 			g.drawImage(imgs.get("D"), x, y, null);
-			break;
+			break;		
 		}
 		
 		//我方坦克加一个血条标示生命值
@@ -338,7 +395,7 @@ public class Tank
 
 	public Rectangle getRect()
 	{
-		return new Rectangle(x, y, WIDTH, HEIGHT);
+		return new Rectangle(x, y, imgs.get("L").getWidth(null), imgs.get("L").getHeight(null));
 	}
 	
 	//恢复之前的那个位置
