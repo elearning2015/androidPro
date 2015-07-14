@@ -32,4 +32,9 @@ public class PropertyMgr
 		return props.getProperty(key);
 	}
 	
+	public static void setProperty(String key, String value)
+	{
+		props.setProperty(key, value);
+	}
+	
 }

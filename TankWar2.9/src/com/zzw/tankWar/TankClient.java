@@ -1,14 +1,15 @@
 package com.zzw.tankWar;
 
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -16,7 +17,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 坦克大战游戏的主控类
@@ -29,21 +32,21 @@ public class TankClient extends Frame {
 	/**
 	 * 整个游戏的宽度
 	 */
-	public static final int GAME_WIDTH = 640;
+	public static final int GAME_WIDTH = 800;
 	/**
 	 * 整个游戏的高度
 	 */
-	public static final int GAME_HEIGHT = 480;
+	public static final int GAME_HEIGHT = 600;
 
 	private Image offScreen = null; // 虚拟屏幕，先在这个上面画好，然后一起画到真实屏幕上，可防止闪烁现象
 	private boolean init = true; // 判断是否初次打开画面
 	private boolean clicked = false;
-	private Label lb = null;
-	private Button btn = null;
 	private Panel pl = null;
 	private Font font = null;  //label中字体
 	private Color color = null; //label中字体颜色
-
+	private Image initImg = Toolkit.getDefaultToolkit().getImage(TankClient.class.getClassLoader().getResource("images/tankWar.jpg"));
+	private Image bkImg = Toolkit.getDefaultToolkit().getImage(TankClient.class.getClassLoader().getResource("images/tankWar1.jpg"));
+	
 	Tank myTank = new Tank(140, 250, true, Direction.STOP, this);
 	Wall w1 = new Wall(140, 180, 60, 235, this);
 	Wall w2 = new Wall(360, 130, 235, 60, this);
@@ -51,6 +54,7 @@ public class TankClient extends Frame {
 	List<Missile> missiles = new ArrayList<Missile>();
 	List<Explode> explodes = new ArrayList<Explode>();
 	List<Tank> tanks = new ArrayList<Tank>();
+	Map<String,Label> choices = new HashMap<String,Label>(); 
 
 	/**
 	 * 解决因频繁paint导致的图像闪烁现象，即paint还未画完，屏幕就更新了。画图过程：rapaint-->update-->paint，
@@ -73,9 +77,11 @@ public class TankClient extends Frame {
 	public void paint(Graphics g) {
 		
 		if (init && !clicked) {
+			g.drawImage(initImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 			return;
 		}
 
+		g.drawImage(bkImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
 		g.drawString("missiles count: " + missiles.size(), 10, 50);
 		g.drawString("explodes count: " + explodes.size(), 10, 70);
 		g.drawString("tanks count: " + tanks.size(), 10, 90);
@@ -147,14 +153,22 @@ public class TankClient extends Frame {
 		this.addKeyListener(new KeyMonitor());
 		
 		pl = new Panel();
-		lb = new Label("START");
-		pl.add(lb);
-		pl.setBounds(this.getX() +GAME_WIDTH/3, this.getY() + GAME_HEIGHT/4, 50, 30);
+		pl.setLayout(new GridLayout(3,1));
+		choices.put("START", new Label("START", Label.CENTER));
+		choices.put("LEVEL1", new Label("LEVEL 1", Label.CENTER));
+		choices.put("LEVEL2", new Label("LEVEL 2", Label.CENTER));
+		pl.add(choices.get("START"));
+		pl.add(choices.get("LEVEL1"));
+		pl.add(choices.get("LEVEL2"));
+		pl.setBackground(Color.white);
+		pl.setBounds(this.getX() +GAME_WIDTH/3, this.getY() + GAME_HEIGHT/4, 120, 90);
 		//System.out.println("w"+lb.getWidth()+"h"+lb.getHeight());
 		//pl.setLocation(this.getX() + GAME_WIDTH/2, this.getY() + GAME_HEIGHT/2);
 		this.setLayout(null);
 		this.add(pl);
-		lb.addMouseListener(new MouseMonitor());
+		choices.get("START").addMouseListener(new MouseMonitor());
+		choices.get("LEVEL1").addMouseListener(new MouseMonitor());
+		choices.get("LEVEL2").addMouseListener(new MouseMonitor());
 
 		this.setVisible(true);
 		new Thread(new TankClientThread()).start();
@@ -183,10 +197,11 @@ public class TankClient extends Frame {
 		public void mouseEntered(MouseEvent e)
 		{
 			//lb.setEnabled(true);
-			font = lb.getFont();
-			color = lb.getForeground();
-			lb.setFont(new Font("Serif",Font.PLAIN,20));
-			lb.setForeground(Color.orange);
+			Component cmp = e.getComponent();
+			font = cmp.getFont();
+			color = cmp.getForeground();
+			cmp.setFont(new Font("Serif",Font.PLAIN,20));
+			cmp.setForeground(Color.orange);
 			
 		}
 
@@ -194,16 +209,39 @@ public class TankClient extends Frame {
 		public void mouseExited(MouseEvent e) 
 		{
 			//lb.setEnabled(false);
-			lb.setFont(font);
-			lb.setForeground(color);
+			Component cmp = e.getComponent();
+			cmp.setFont(font);
+			cmp.setForeground(color);
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) 
 		{
+			pl.setVisible(false);
+			Component cmp = e.getComponent();
 			clicked = true;
 			init = false;
-			lb.setVisible(false);
+			if(cmp == choices.get("START"))
+			{
+				choices.get("LEVEL1").setVisible(false);
+				choices.get("LEVEL2").setVisible(false);
+			}
+			else if(cmp == choices.get("LEVEL1"))			
+			{
+				PropertyMgr.setProperty("initTankCount", "8");
+				PropertyMgr.setProperty("rebornTankCount", "5");
+				choices.get("START").setVisible(false);
+				choices.get("LEVEL2").setVisible(false);
+			}
+			else if(cmp == choices.get("LEVEL2"))			
+			{
+				PropertyMgr.setProperty("initTankCount", "12");
+				PropertyMgr.setProperty("rebornTankCount", "10");
+				choices.get("START").setVisible(false);
+				choices.get("LEVEL1").setVisible(false);
+			}
+			
+			cmp.setVisible(false);
 		}
 
 	}
