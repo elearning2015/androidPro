@@ -395,7 +395,7 @@ public class Tank
 
 	public Rectangle getRect()
 	{
-		return new Rectangle(x, y, imgs.get("L").getWidth(null), imgs.get("L").getHeight(null));
+		return new Rectangle(x, y, WIDTH, HEIGHT);
 	}
 	
 	//恢复之前的那个位置

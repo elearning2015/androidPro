@@ -17,6 +17,7 @@ public class Missile
 	public static final int HEIGHT = 10;
 	
 	private int x, y;
+	private int w, h; //因为各方向子弹的长宽不一样，所以在getRect时分贝获取其w、h
 	Direction dir;
 	private boolean live = true;
 
@@ -161,7 +162,43 @@ public class Missile
 
 	public Rectangle getRect()
 	{
-		return new Rectangle(x, y, imgs.get("L").getWidth(null), imgs.get("L").getHeight(null));
+		
+		switch(dir)
+		{
+		case L:
+			w = imgs.get("L").getWidth(null);
+			h = imgs.get("L").getHeight(null);
+			break;
+		case LU:
+			w = imgs.get("LU").getWidth(null);
+			h = imgs.get("LU").getHeight(null);
+			break;
+		case LD:
+			w = imgs.get("LD").getWidth(null);
+			h = imgs.get("LD").getHeight(null);
+			break;
+		case R:
+			w = imgs.get("R").getWidth(null);
+			h = imgs.get("R").getHeight(null);
+			break;
+		case RU:
+			w = imgs.get("RU").getWidth(null);
+			h = imgs.get("RU").getHeight(null);
+			break;
+		case RD:
+			w = imgs.get("RD").getWidth(null);
+			h = imgs.get("RD").getHeight(null);
+			break;
+		case U:
+			w = imgs.get("U").getWidth(null);
+			h = imgs.get("U").getHeight(null);
+			break;
+		case D:
+			w = imgs.get("D").getWidth(null);
+			h = imgs.get("D").getHeight(null);
+			break;
+		}
+		return new Rectangle(x, y, w, h);
 		
 	}
 	
@@ -210,7 +247,7 @@ public class Missile
 	public boolean hitWall(Wall w)
 	{
 		//如果加上条件!this.good，则敌方子弹不能穿墙，但我方可以
-		if(!this.good && this.live && this.getRect().intersects(w.getRect()))
+		if(this.live && this.getRect().intersects(w.getRect()))
 		{
 			this.live = false;
 			return true;
