@@ -208,7 +208,7 @@ public class Missile
 		{
 			if(t.isGood())
 			{
-				t.setLife(t.getLife() -20);
+				t.setLife(t.getLife() -5);
 				if(t.getLife() <= 0)
 				{
 					t.setLive(false);

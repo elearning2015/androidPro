@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.TextArea;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -42,7 +43,8 @@ public class TankClient extends Frame {
 	private Image offScreen = null; // 虚拟屏幕，先在这个上面画好，然后一起画到真实屏幕上，可防止闪烁现象
 	private boolean init = true; // 判断是否初次打开画面
 	private boolean clicked = false;
-	private Panel pl = null;
+	private Panel pl = null, pn = null;
+	Label desLb = null;
 	private Font font = null;  //label中字体
 	private Color color = null; //label中字体颜色
 	static Image initImg, bkImg, wall1, wall2;
@@ -57,8 +59,6 @@ public class TankClient extends Frame {
 		wall1 = tk.getImage(TankClient.class.getClassLoader().getResource("images/wall1.png"));
 		wall2 = tk.getImage(TankClient.class.getClassLoader().getResource("images/wall2.png"));
 	}
-	
-	
 	
 	Tank myTank = new Tank(this.getX() + GAME_WIDTH/5, this.getY() + GAME_HEIGHT/2, true, Direction.STOP, this);
 	Wall w1 = new Wall(this.getX() + GAME_WIDTH/2, this.getY() + GAME_HEIGHT/4, wall1, 432, 68,this);
@@ -79,7 +79,8 @@ public class TankClient extends Frame {
 		}
 		Graphics gOffSrreen = offScreen.getGraphics(); // 获取imge上画笔
 		Color c = gOffSrreen.getColor();
-		gOffSrreen.setColor(Color.green);
+		gOffSrreen.setColor(new Color(10, 100, 150));
+		//gOffSrreen.setColor(new Color(1f, 1f, 0f, 0.f));
 		gOffSrreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT); // 用想要图像的背景色刷一下背景，否则，所有圆形连成一条线了
 		gOffSrreen.setColor(c);
 		paint(gOffSrreen); // 调用paint将想要的图像画在image上
@@ -96,6 +97,10 @@ public class TankClient extends Frame {
 		
 		if(!init && clicked)  //在开始界面选择了，就根据游戏等级获取不同的参数配置
 		{
+			Font fn = new Font("Serif",Font.PLAIN,20);
+			this.setForeground(Color.blue);  	//设置字体颜色
+			this.setFont(fn); 					//设置字体大小
+			
 			init = true;
 			int num = Integer.parseInt(PropertyMgr.getProperty("initTankCount"));
 			int x, y;
@@ -115,13 +120,13 @@ public class TankClient extends Frame {
 				
 			}
 		}
-
+		
 		g.drawImage(bkImg, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
-		g.drawString("missiles count: " + missiles.size(), 10, 50);
-		g.drawString("explodes count: " + explodes.size(), 10, 70);
-		g.drawString("tanks count: " + tanks.size(), 10, 90);
-		g.drawString("tanks life: " + myTank.getLife(), 10, 110);
-		g.drawString("my score : " + myTank.getScore(), 10, 130);
+		g.drawString("missiles count: " + missiles.size(), GAME_WIDTH/2, 40);
+		g.drawString("explodes count: " + explodes.size(), GAME_WIDTH/2, 60);
+		g.drawString("tanks count: " + tanks.size(), GAME_WIDTH/2, 80);
+		g.drawString("tanks life: " + myTank.getLife(), GAME_WIDTH/2, 100);
+		g.drawString("my score : " + myTank.getScore(), GAME_WIDTH/2, 120);
 
 		/**
 		 * 敌军全被消灭了，又新加一批
@@ -135,8 +140,8 @@ public class TankClient extends Frame {
 				Tank t;
 				do
 				{
-					x = this.getX() + rn.nextInt(GAME_WIDTH);
-					y = this.getY() + rn.nextInt(GAME_HEIGHT);
+					x = rn.nextInt(GAME_WIDTH);
+					y = rn.nextInt(GAME_HEIGHT);
 					t = new Tank(x, y, false, Direction.D, this);
 				}while(t.collideswithTanks(tanks) || t.hitWall(w1) || t.hitWall(w2));
 				//do while:检测当前坦克坐标是否与其它坦克产生的互相重合、是否与墙重合，
@@ -186,7 +191,8 @@ public class TankClient extends Frame {
 		this.setLocation(30, 40);
 		this.setSize(GAME_WIDTH, GAME_HEIGHT);
 		this.setResizable(false);
-		this.setBackground(Color.green);
+		//this.setState(TankClient.MAXIMIZED_BOTH);
+		//this.setBackground(new Color(0, 100, 10));  //这里设置的背景色不起作用，被update中设置的覆盖了
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -196,22 +202,28 @@ public class TankClient extends Frame {
 		
 		//
 		pl = new Panel();
-		pl.setLayout(new GridLayout(3,1));
-		choices.put("START", new Label("START", Label.CENTER));
+		pl.setLayout(new GridLayout(4,1));
+		choices.put("Des", new Label("Description", Label.CENTER));
 		choices.put("LEVEL1", new Label("LEVEL 1", Label.CENTER));
 		choices.put("LEVEL2", new Label("LEVEL 2", Label.CENTER));
-		pl.add(choices.get("START"));
+		choices.put("LEVEL3", new Label("LEVEL 3", Label.CENTER));
+		pl.setFont(new Font("Serif",Font.PLAIN,20));  //设置字体大小
+		pl.add(choices.get("Des"));
 		pl.add(choices.get("LEVEL1"));
 		pl.add(choices.get("LEVEL2"));
-		pl.setBackground(Color.white);
-		pl.setBounds(this.getX() +GAME_WIDTH/3, this.getY() + GAME_HEIGHT/4, 120, 90);
+		pl.add(choices.get("LEVEL3"));
+		//Color c = new Color(1f, 1f, 0f, 0.f);
+		pl.setBackground(new Color(10, 100, 150, 255));
+		pl.setBounds(this.getX() +GAME_WIDTH/3, this.getY() + GAME_HEIGHT/4, 200, 150);
 		//System.out.println("w"+lb.getWidth()+"h"+lb.getHeight());
 		//pl.setLocation(this.getX() + GAME_WIDTH/2, this.getY() + GAME_HEIGHT/2);
 		this.setLayout(null);
-		this.add(pl);
-		choices.get("START").addMouseListener(new MouseMonitor());
+		this.add(pl);   //自己的体会：加到Frame上的控件，会最后画出来，所以启动时加了一个背景图片initImg也不会覆盖这个Panel
+
+		choices.get("Des").addMouseListener(new MouseMonitor());
 		choices.get("LEVEL1").addMouseListener(new MouseMonitor());
 		choices.get("LEVEL2").addMouseListener(new MouseMonitor());
+		choices.get("LEVEL3").addMouseListener(new MouseMonitor());
 
 //		if(!init && clicked)
 //		{
@@ -253,7 +265,7 @@ public class TankClient extends Frame {
 			Component cmp = e.getComponent();
 			font = cmp.getFont();
 			color = cmp.getForeground();
-			cmp.setFont(new Font("Serif",Font.PLAIN,20));
+			cmp.setFont(new Font("Serif",Font.PLAIN,25));
 			cmp.setForeground(Color.orange);
 			
 		}
@@ -274,24 +286,35 @@ public class TankClient extends Frame {
 			init = false;
 			pl.setVisible(false);
 			Component cmp = e.getComponent();
-			if(cmp == choices.get("START"))
+			if(cmp == choices.get("Des"))
 			{
-				choices.get("LEVEL1").setVisible(false);
+				//to do....
 				choices.get("LEVEL2").setVisible(false);
+				choices.get("LEVEL3").setVisible(false);
 			}
-			else if(cmp == choices.get("LEVEL1"))			
+			else if(cmp == choices.get("LEVEL1"))
 			{
 				PropertyMgr.setProperty("initTankCount", "10");
 				PropertyMgr.setProperty("rebornTankCount", "5");
-				choices.get("START").setVisible(false);
+				choices.get("Des").setVisible(false);
 				choices.get("LEVEL2").setVisible(false);
+				choices.get("LEVEL3").setVisible(false);
 			}
 			else if(cmp == choices.get("LEVEL2"))			
 			{
+				PropertyMgr.setProperty("initTankCount", "15");
+				PropertyMgr.setProperty("rebornTankCount", "10");
+				choices.get("Des").setVisible(false);
+				choices.get("LEVEL1").setVisible(false);
+				choices.get("LEVEL3").setVisible(false);
+			}
+			else if(cmp == choices.get("LEVEL3"))			
+			{
 				PropertyMgr.setProperty("initTankCount", "30");
 				PropertyMgr.setProperty("rebornTankCount", "15");
-				choices.get("START").setVisible(false);
+				choices.get("Des").setVisible(false);
 				choices.get("LEVEL1").setVisible(false);
+				choices.get("LEVEL2").setVisible(false);
 			}
 			cmp.setVisible(false);
 		}
