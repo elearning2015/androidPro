@@ -17,7 +17,7 @@ public class TankClient extends Frame
         List<Explode> explodes = new ArrayList<Explode>();
         List<Tank> tanks = new ArrayList<Tank>();
       
-        private NetClient nc = new NetClient();
+        private NetClient nc = new NetClient(this);
         
         //解决因频繁paint导致的图像闪烁现象，即paint还未画完，屏幕就更新了。画图过程：rapaint-->update-->paint，
         //可采用“双缓冲”：截获update函数，在屏幕背后（即一个image上）先画一个想要的图像，再一次性画在屏幕上。
@@ -114,7 +114,9 @@ public class TankClient extends Frame
 		public static void main(String[] args) 
 		{
 				TankClient tc = new TankClient();
+				//TankClient tc1 = new TankClient();
 				tc.launchFrame();
+				//tc1.launchFrame();
 		}
 
 		private class  TankClientThread implements Runnable

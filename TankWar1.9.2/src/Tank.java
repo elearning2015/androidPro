@@ -16,6 +16,7 @@ public class Tank
 		private Dir ptDir = Dir.D;    //炮筒方向
 		private int x, y;
 		private boolean good;
+		int id; //坦克的id，用于坦克间互相识别，是由服务器分配的，然后又要写会给服务器，然服务器来传送给其他坦克
 
 		private boolean live = true;
 		private TankClient tc;
@@ -58,6 +59,7 @@ public class Tank
 				}
 				
 				g.fillOval(x, y, WIDTH, HEIGHT);
+				g.drawString("id:" + id, x, y);
 				g.setColor(c);
 				
 				switch(ptDir)
