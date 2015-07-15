@@ -355,7 +355,7 @@ public class Tank
 		int key = e.getKeyCode();
 		switch(key)
 		{
-		case KeyEvent.VK_CONTROL:
+		case KeyEvent.VK_S:
 			fire();
 			break;
 		case KeyEvent.VK_UP:
