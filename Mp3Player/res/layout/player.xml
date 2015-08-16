@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="1dip"
+    android:paddingBottom="1dip"
+    android:layout_gravity="center"
+    android:background="#000000">
+    
+     <TextView 
+     android:id="@+id/lrcText"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:textColor="#11ff22"
+     android:textSize="9pt"
+     android:layout_centerInParent="true"
+     android:gravity="center"/>
+    
+    <LinearLayout 
+        android:id="@+id/linearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="15dip"
+        android:layout_alignParentBottom="true">
+        
+    	<ImageButton 
+	        android:id="@+id/begin"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/begin"
+	        android:layout_weight="1"/>
+    	<ImageButton 
+	        android:id="@+id/pause"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/pause"
+	        android:layout_weight="1"/>
+	    <ImageButton 
+	        android:id="@+id/stop"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/stop"
+	        android:layout_weight="1"/>
+    </LinearLayout>
+    
+
+</RelativeLayout>
